@@ -24,6 +24,7 @@ let moveLeft = false;
 let moveRight = false;
 let showInstructions = true;
 let firstDrawDone = false;
+let nextLevelPending = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -495,15 +496,15 @@ function drawHUD() {
 }
 
 function checkInvaderReach() {
-  // Se almeno un invasore raggiunge il fondo, game over
   for (let invader of invaders) {
     if (invader.y + invader.height/2 > player.y - player.height/2) {
       gameOver = true;
+      nextLevelPending = false;
       return;
     }
   }
-  // Se tutti gli invasori sono stati eliminati, passa al livello successivo
-  if (Array.isArray(invaders) && invaders.length === 0 && !gameOver) {
+  if (Array.isArray(invaders) && invaders.length === 0 && !gameOver && !nextLevelPending) {
+    nextLevelPending = true;
     setTimeout(() => {
       level++;
       lives++;
@@ -512,6 +513,7 @@ function checkInvaderReach() {
       invaderSpeed += 0.1;
       createInvaders();
       createShields();
+      nextLevelPending = false;
     }, 100);
   }
 }
