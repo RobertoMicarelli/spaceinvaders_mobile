@@ -37,12 +37,12 @@ function positionPlayerAndShields() {
   let fireBtnTop = getFireButtonTopY();
   const shieldWidth = 50;
   const shieldHeight = 25;
-  // Cannone: stessa larghezza delle barriere, altezza 25
+  // Cannone: stessa larghezza delle barriere, altezza 25, ancora più in alto
   player = {
     x: width / 2,
-    y: fireBtnTop - 45, // 45px sopra il pulsante
+    y: fireBtnTop - 55, // 55px sopra il pulsante
     width: shieldWidth,
-    height: 25, // ridotto
+    height: 25,
     speed: 12
   };
   shields = [];
@@ -50,7 +50,7 @@ function positionPlayerAndShields() {
   for (let i = 0; i < 4; i++) {
     shields.push({
       x: (i + 1) * spacing,
-      y: player.y - 60,
+      y: player.y - 70, // 70px sopra il cannone
       width: shieldWidth,
       height: shieldHeight,
       health: shieldHealth,
@@ -503,14 +503,16 @@ function checkInvaderReach() {
     }
   }
   // Se tutti gli invasori sono stati eliminati, passa al livello successivo
-  if (Array.isArray(invaders) && invaders.length === 0) {
-    level++;
-    lives++;
-    playBonusSound();
-    shieldHealth = Math.floor(5 * Math.pow(1.5, level - 1));
-    invaderSpeed += 0.5;
-    createInvaders();
-    createShields();
+  if (Array.isArray(invaders) && invaders.length === 0 && !gameOver) {
+    setTimeout(() => {
+      level++;
+      lives++;
+      playBonusSound();
+      shieldHealth = Math.floor(5 * Math.pow(1.5, level - 1));
+      invaderSpeed += 0.5;
+      createInvaders();
+      createShields();
+    }, 100);
   }
 }
 
@@ -623,9 +625,9 @@ function resetGame() {
   const shieldHeight = 25;
   player = {
     x: width / 2,
-    y: height - 115,
+    y: height - 125, // 10px più in alto rispetto a prima
     width: shieldWidth,
-    height: 25, // ridotto
+    height: 25,
     speed: 12
   };
   shields = [];
@@ -633,7 +635,7 @@ function resetGame() {
   for (let i = 0; i < 4; i++) {
     shields.push({
       x: (i + 1) * spacing,
-      y: player.y - 60,
+      y: player.y - 70,
       width: shieldWidth,
       height: shieldHeight,
       health: shieldHealth,
