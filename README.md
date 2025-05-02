@@ -1,16 +1,14 @@
-# spaceinvaders_mobile
-Piccolo test con Cursor.AI per creare una APP giocabile su cellulare
-# Space Invaders Mobile
+# Space Invaders Mobile (Touch Edition)
 
-Un classico gioco Space Invaders ottimizzato per dispositivi mobili, creato con p5.js.
+Un classico gioco Space Invaders ottimizzato per dispositivi mobili, creato con p5.js e controlli touch.
 
-![Space Invaders](https://raw.githubusercontent.com/RobertoMicarelli/spaceinvaders_mobile/main/preview.png)
 
 ## 🚀 Deploy su GitHub Pages
 
 1. Assicurati di avere i seguenti file nella repository:
-   - `index.html` (rinominato da `index_mobile.html`)
-   - `space_invaders.js`
+   - `index.html` (o `space_iphone.html` rinominato)
+   - `space_iphone.js`
+   - `README.md`
 
 2. Vai nelle impostazioni della repository (Settings)
 3. Nella sezione "Pages" (sotto "Code and automation")
@@ -18,28 +16,26 @@ Un classico gioco Space Invaders ottimizzato per dispositivi mobili, creato con 
 5. Seleziona il branch "main" e la cartella "/ (root)"
 6. Clicca "Save"
 
-Il gioco sarà disponibile all'URL: https://robertomicarelli.github.io/spaceinvaders_mobile/
+Il gioco sarà disponibile all'URL: `https://[tuo-username].github.io/[nome-repository]`
 
-## 🎮 Come Giocare
+## 🎮 Come Giocare (versione mobile touch)
 
-### Controlli Desktop
-- Freccia sinistra: Muovi a sinistra
-- Freccia destra: Muovi a destra
-- Barra spaziatrice: Sparare
-- Enter: Iniziare/Rigiocare
-
-### Controlli Mobile
-- Tocca i pulsanti sullo schermo per muoverti e sparare
-- Ruota il dispositivo in orizzontale per una migliore esperienza di gioco
+- **Muovi il cannone**: usa le frecce touch in basso a sinistra e destra
+- **Spara**: premi il pulsante centrale giallo
+- **Rigioca**: premi il pulsante "Rigioca" che appare a fine partita
+- Il cannone e le barriere sono sempre posizionati sopra i controlli touch
+- Il layout si adatta automaticamente a qualsiasi schermo
 
 ## 🎯 Caratteristiche
 
-- 5 vite iniziali
+- 6 righe e 8 colonne di nemici, sempre centrati
 - Barriere colorate con resistenza crescente
 - 5 tipi diversi di nemici con sprite uniche
 - Effetti sonori per ogni azione
 - Sistema di punteggio
-- Livelli progressivi
+- Livelli progressivi con **aumento di difficoltà lineare** (la velocità degli invasori cresce gradualmente)
+- Pulsante "Rigioca" per ripartire facilmente
+- Responsive e ottimizzato per smartphone
 
 ## 🛠️ Tecnologie Utilizzate
 
@@ -53,7 +49,6 @@ Il gioco sarà disponibile all'URL: https://robertomicarelli.github.io/spaceinva
 Il gioco è ottimizzato per:
 - Smartphone (iOS e Android)
 - Tablet
-- Desktop
 
 ## 🎨 Personalizzazione
 
