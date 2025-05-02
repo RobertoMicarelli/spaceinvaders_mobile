@@ -46,14 +46,19 @@ function createInvaders() {
   invaders = [];
   const rows = 5;
   const cols = 10;
-  const spacing = 60;
+  const margin = 20;
+  // Adatta la larghezza degli invasori e lo spacing in base allo schermo
+  let invaderW = constrain(Math.floor((width - 2 * margin) / (cols * 1.3)), 18, 40);
+  let invaderH = Math.floor(invaderW * 0.75);
+  const availableWidth = width - 2 * margin;
+  const spacing = availableWidth / (cols - 1);
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       invaders.push({
-        x: j * spacing + 100,
-        y: i * spacing + 50,
-        width: 40,
-        height: 30,
+        x: margin + j * spacing,
+        y: i * (invaderH + 10) + 50,
+        width: invaderW,
+        height: invaderH,
         points: (rows - i) * 10,
         type: i,
         color: i === 0 ? color(255, 0, 0) : 
