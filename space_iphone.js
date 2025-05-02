@@ -47,10 +47,9 @@ function windowResized() {
 
 function createInvaders() {
   invaders = [];
-  const rows = 5;
-  const cols = 10;
+  const rows = 6;
+  const cols = 8;
   const margin = 20;
-  // Adatta la larghezza degli invasori e lo spacing in base allo schermo
   let invaderW = constrain(Math.floor((width - 2 * margin) / (cols * 1.3)), 18, 40);
   let invaderH = Math.floor(invaderW * 0.75);
   const availableWidth = width - 2 * margin;
@@ -63,11 +62,11 @@ function createInvaders() {
         width: invaderW,
         height: invaderH,
         points: (rows - i) * 10,
-        type: i,
-        color: i === 0 ? color(255, 0, 0) : 
-               i === 1 ? color(255, 165, 0) : 
-               i === 2 ? color(255, 255, 0) : 
-               i === 3 ? color(0, 255, 0) : 
+        type: i % 5,
+        color: (i % 5) === 0 ? color(255, 0, 0) : 
+               (i % 5) === 1 ? color(255, 165, 0) : 
+               (i % 5) === 2 ? color(255, 255, 0) : 
+               (i % 5) === 3 ? color(0, 255, 0) : 
                color(0, 0, 255)
       });
     }
