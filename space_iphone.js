@@ -242,21 +242,29 @@ function drawInvader(invader) {
 function updateInvaders() {
   let moveDown = false;
   let edgeReached = false;
+
+  // Trova il bordo più a sinistra e più a destra del gruppo
+  let minX = width, maxX = 0;
   for (let invader of invaders) {
-    if ((invader.x + invader.width/2 > width && invaderDirection > 0) ||
-        (invader.x - invader.width/2 < 0 && invaderDirection < 0)) {
-      edgeReached = true;
-      break;
-    }
+    if (invader.x - invader.width/2 < minX) minX = invader.x - invader.width/2;
+    if (invader.x + invader.width/2 > maxX) maxX = invader.x + invader.width/2;
   }
+
+  // Controlla se il gruppo ha raggiunto i bordi
+  if ((maxX > width && invaderDirection > 0) ||
+      (minX < 0 && invaderDirection < 0)) {
+    edgeReached = true;
+  }
+
   if (edgeReached) {
     invaderDirection *= -1;
     moveDown = true;
   }
+
   for (let i = invaders.length - 1; i >= 0; i--) {
     let invader = invaders[i];
     if (moveDown) {
-      invader.y += 15;
+      invader.y += 8; // discesa più lenta per schermi piccoli
     } else {
       invader.x += invaderSpeed * invaderDirection;
     }
