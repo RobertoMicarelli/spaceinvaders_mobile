@@ -625,7 +625,7 @@ function resetGame() {
   const shieldHeight = 25;
   player = {
     x: width / 2,
-    y: height - 125, // 10px più in alto rispetto a prima
+    y: height - 125,
     width: shieldWidth,
     height: 25,
     speed: 12
