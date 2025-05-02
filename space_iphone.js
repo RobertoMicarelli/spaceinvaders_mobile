@@ -117,6 +117,13 @@ function draw() {
   drawShields();
   drawHUD();
   checkInvaderReach();
+
+  // DEBUG SENSORI
+  fill(255, 255, 0);
+  textSize(16);
+  text('rotationX: ' + (typeof rotationX !== 'undefined' ? nf(rotationX, 1, 2) : 'n/a'), 20, height - 60);
+  text('rotationY: ' + (typeof rotationY !== 'undefined' ? nf(rotationY, 1, 2) : 'n/a'), 20, height - 40);
+  text('accelerationX: ' + (typeof accelerationX !== 'undefined' ? nf(accelerationX, 1, 2) : 'n/a'), 20, height - 20);
 }
 
 function showStartScreen() {
@@ -511,22 +518,21 @@ function touchStarted() {
 }
 
 function deviceMoved() {
-  if (typeof rotationY !== 'undefined') {
-    if (rotationY > 20) {
-      moveInput = 1;
-    } else if (rotationY < -20) {
-      moveInput = -1;
-    } else {
-      moveInput = 0;
+  // Solo portrait
+  if (window.innerWidth < window.innerHeight) {
+    // Prova rotationY
+    if (typeof rotationY !== 'undefined') {
+      if (rotationY > 10) moveInput = 1;
+      else if (rotationY < -10) moveInput = -1;
+      else moveInput = 0;
     }
-  } else if (typeof accelerationX !== 'undefined') {
-    if (accelerationX > 5) {
-      moveInput = -1;
-    } else if (accelerationX < -5) {
-      moveInput = 1;
-    } else {
-      moveInput = 0;
+    // Prova anche accelerationX se rotationY non funziona
+    if (typeof accelerationX !== 'undefined') {
+      if (accelerationX > 3) moveInput = 1;
+      else if (accelerationX < -3) moveInput = -1;
     }
+  } else {
+    moveInput = 0;
   }
 }
 
