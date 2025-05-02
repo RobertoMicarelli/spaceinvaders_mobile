@@ -380,6 +380,8 @@ function updateBullets() {
     bullet.y -= 5;
     fill(255);
     rect(bullet.x - 2, bullet.y - 5, 4, 10);
+    
+    // Controlla collisioni con gli invasori
     for (let j = invaders.length - 1; j >= 0; j--) {
       let invader = invaders[j];
       if (bullet.x > invader.x - invader.width/2 &&
@@ -393,6 +395,13 @@ function updateBullets() {
         break;
       }
     }
+    
+    // Se non ci sono più invasori, rimuovi il proiettile
+    if (invaders.length === 0) {
+      bullets.splice(i, 1);
+    }
+    
+    // Controlla collisioni con le barriere
     for (let shield of shields) {
       if (shield.health > 0 &&
           bullet.x > shield.x - shield.width/2 &&
@@ -404,6 +413,8 @@ function updateBullets() {
         break;
       }
     }
+    
+    // Rimuovi i proiettili che escono dallo schermo
     if (bullet.y < 0) {
       bullets.splice(i, 1);
     }
@@ -496,6 +507,7 @@ function drawHUD() {
 }
 
 function checkInvaderReach() {
+  // Controlla se gli invasori hanno raggiunto il giocatore
   for (let invader of invaders) {
     if (invader.y + invader.height/2 > player.y - player.height/2) {
       gameOver = true;
@@ -503,15 +515,28 @@ function checkInvaderReach() {
       return;
     }
   }
+
+  // Gestione del passaggio al livello successivo
   if (Array.isArray(invaders) && invaders.length === 0 && !gameOver && !nextLevelPending) {
     nextLevelPending = true;
+    
+    // Incrementa il livello e aggiorna le statistiche
     level++;
     lives++;
     playBonusSound();
     shieldHealth = Math.floor(5 * Math.pow(1.5, level - 1));
     invaderSpeed += 0.1;
+    
+    // Pulisci gli array prima di creare nuovi elementi
+    invaders = [];
+    bullets = [];
+    invaderBullets = [];
+    
+    // Crea nuovi invasori e barriere
     createInvaders();
     createShields();
+    
+    // Resetta il flag
     nextLevelPending = false;
   }
 }
