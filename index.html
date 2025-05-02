@@ -34,11 +34,45 @@
             font-family: Arial, sans-serif;
             pointer-events: none;
         }
+        #touch-controls {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            z-index: 20;
+            pointer-events: none;
+        }
+        .arrow-btn {
+            width: 80px;
+            height: 80px;
+            margin: 10px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 40px;
+            user-select: none;
+            pointer-events: auto;
+            border: 2px solid #fff;
+        }
+        @media (max-width: 600px) {
+            .arrow-btn { width: 60px; height: 60px; font-size: 28px; }
+        }
     </style>
 </head>
 <body>
     <div id="info">
-        Inclina il telefono per muovere il cannone. Tocca lo schermo per sparare.
+        Tocca le frecce per muovere il cannone. Tocca lo schermo per sparare.
+    </div>
+    <div id="touch-controls">
+        <div class="arrow-btn" id="left-btn">&#8592;</div>
+        <div class="arrow-btn" id="right-btn">&#8594;</div>
     </div>
     <script src="./space_iphone.js"></script>
 </body>
