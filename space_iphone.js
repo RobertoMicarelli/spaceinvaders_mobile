@@ -25,6 +25,7 @@ let moveRight = false;
 let showInstructions = true;
 let firstDrawDone = false;
 let nextLevelPending = false;
+let lastInvaderEliminated = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -393,10 +394,9 @@ function updateBullets() {
         invaders.splice(j, 1);
         bullets.splice(i, 1);
         
-        // Se era l'ultimo invasore, pulisci immediatamente i proiettili
+        // Se era l'ultimo invasore, imposta il flag
         if (invaders.length === 0) {
-          bullets = [];
-          invaderBullets = [];
+          lastInvaderEliminated = true;
         }
         break;
       }
@@ -513,17 +513,20 @@ function checkInvaderReach() {
     if (invader.y + invader.height/2 > player.y - player.height/2) {
       gameOver = true;
       nextLevelPending = false;
+      lastInvaderEliminated = false;
       return;
     }
   }
 
   // Gestione del passaggio al livello successivo
-  if (Array.isArray(invaders) && invaders.length === 0 && !gameOver && !nextLevelPending) {
+  if (lastInvaderEliminated && !gameOver && !nextLevelPending) {
     nextLevelPending = true;
+    lastInvaderEliminated = false;
     
-    // Pulisci immediatamente gli array
+    // Pulisci tutti gli array
     bullets = [];
     invaderBullets = [];
+    invaders = [];
     
     // Incrementa il livello e aggiorna le statistiche
     level++;
@@ -536,10 +539,10 @@ function checkInvaderReach() {
     createInvaders();
     createShields();
     
-    // Forza un frame di rendering
-    requestAnimationFrame(() => {
+    // Resetta il flag dopo un breve delay
+    setTimeout(() => {
       nextLevelPending = false;
-    });
+    }, 50);
   }
 }
 
@@ -676,6 +679,8 @@ function resetGame() {
     });
   }
   invaders = [];
+  bullets = [];
+  invaderBullets = [];
   score = 0;
   lives = 5;
   gameOver = false;
@@ -685,6 +690,8 @@ function resetGame() {
   invaderSpeed = 0.3;
   invaderDirection = 1;
   lastInvaderShot = 0;
+  lastInvaderEliminated = false;
+  nextLevelPending = false;
   createInvaders();
   createShields();
 } 
