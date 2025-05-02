@@ -147,6 +147,12 @@ function drawPlayer() {
 // (Le funzioni drawInvader, updateInvaders, updateBullets, updateInvaderBullets, drawShields, drawHUD, checkInvaderReach, playLaserSound, playEnemyExplosion, playLifeLostSound, playBonusSound sono identiche alla versione attuale e vanno copiate qui)
 
 function touchStarted() {
+  // Richiesta permesso sensori su iOS
+  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+    DeviceMotionEvent.requestPermission().then(response => {
+      // Puoi gestire la risposta se vuoi
+    }).catch(console.error);
+  }
   if (!gameStarted) {
     gameStarted = true;
     return false;
