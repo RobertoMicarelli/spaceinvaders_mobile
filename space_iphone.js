@@ -48,15 +48,16 @@ function windowResized() {
 function createInvaders() {
   invaders = [];
   const rows = 6;
-  const cols = 8;
+  const totalCols = 10; // per calcolare lo spacing
+  const usedCols = 8; // colonne effettive
   const margin = 20;
-  let invaderW = constrain(Math.floor((width - 2 * margin) / (cols * 1.3)), 18, 40);
+  let invaderW = constrain(Math.floor((width - 2 * margin) / (totalCols * 1.3)), 18, 40);
   let invaderH = Math.floor(invaderW * 0.75);
   const availableWidth = width - 2 * margin;
-  const spacing = availableWidth / (cols - 1);
+  const spacing = availableWidth / (totalCols - 1);
+  // Crea solo le colonne centrali (da 1 a 8) di una griglia 10x6
   for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      let colIndex = j + 1;
+    for (let j = 1; j <= usedCols; j++) { // j da 1 a 8
       invaders.push({
         x: margin + j * spacing,
         y: i * (invaderH + 10) + 50,
@@ -554,6 +555,11 @@ function touchStarted(e) {
     if (c.requestFullscreen) c.requestFullscreen();
     else if (c.webkitRequestFullscreen) c.webkitRequestFullscreen();
     else if (c.msRequestFullscreen) c.msRequestFullscreen();
+  }
+  // Se il gioco è finito, il tocco ovunque fa ripartire
+  if (gameOver) {
+    resetGame();
+    return false;
   }
   // Se il tocco è su una freccia o sul pulsante di fuoco, non fare nulla qui
   if (e && e.target && (e.target.id === 'left-btn' || e.target.id === 'right-btn' || e.target.id === 'fire-btn')) {
