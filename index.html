@@ -3,14 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="./style_iphone.css">
     <title>Space Invaders iPhone</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            margin: auto;
+            max-width: 100vw;
+            max-height: 100vh;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 100vw;
+            color: #fff;
+            text-align: center;
+            font-size: 18px;
+            z-index: 10;
+            font-family: Arial, sans-serif;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
     <div id="info">
         Inclina il telefono per muovere il cannone. Tocca lo schermo per sparare.
     </div>
-    <script src="./space_iphone.js"></script>
+    <script src="space_iphone.js"></script>
 </body>
 </html> 
