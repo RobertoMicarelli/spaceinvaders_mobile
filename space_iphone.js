@@ -37,12 +37,12 @@ function positionPlayerAndShields() {
   let fireBtnTop = getFireButtonTopY();
   const shieldWidth = 50;
   const shieldHeight = 25;
-  // Cannone: stessa larghezza delle barriere, altezza 35
+  // Cannone: stessa larghezza delle barriere, altezza 25
   player = {
     x: width / 2,
-    y: fireBtnTop - 45, // 45px sopra il pulsante (30+15)
+    y: fireBtnTop - 45, // 45px sopra il pulsante
     width: shieldWidth,
-    height: 35,
+    height: 25, // ridotto
     speed: 12
   };
   shields = [];
@@ -495,13 +495,15 @@ function drawHUD() {
 }
 
 function checkInvaderReach() {
+  // Se almeno un invasore raggiunge il fondo, game over
   for (let invader of invaders) {
     if (invader.y + invader.height/2 > player.y - player.height/2) {
       gameOver = true;
-      break;
+      return;
     }
   }
-  if (invaders.length === 0) {
+  // Se tutti gli invasori sono stati eliminati, passa al livello successivo
+  if (Array.isArray(invaders) && invaders.length === 0) {
     level++;
     lives++;
     playBonusSound();
@@ -621,9 +623,9 @@ function resetGame() {
   const shieldHeight = 25;
   player = {
     x: width / 2,
-    y: height - 115, // 15px più in alto rispetto a prima
+    y: height - 115,
     width: shieldWidth,
-    height: 35,
+    height: 25, // ridotto
     speed: 12
   };
   shields = [];
