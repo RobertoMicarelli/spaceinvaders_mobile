@@ -505,6 +505,7 @@ function checkInvaderReach() {
   }
   if (Array.isArray(invaders) && invaders.length === 0 && !gameOver && !nextLevelPending) {
     nextLevelPending = true;
+    invaders = [{}]; // placeholder per evitare richiami multipli
     setTimeout(() => {
       level++;
       lives++;
