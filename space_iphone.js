@@ -392,13 +392,14 @@ function updateBullets() {
         playEnemyExplosion(invader.type);
         invaders.splice(j, 1);
         bullets.splice(i, 1);
+        
+        // Se era l'ultimo invasore, pulisci immediatamente i proiettili
+        if (invaders.length === 0) {
+          bullets = [];
+          invaderBullets = [];
+        }
         break;
       }
-    }
-    
-    // Se non ci sono più invasori, rimuovi il proiettile
-    if (invaders.length === 0) {
-      bullets.splice(i, 1);
     }
     
     // Controlla collisioni con le barriere
@@ -520,6 +521,10 @@ function checkInvaderReach() {
   if (Array.isArray(invaders) && invaders.length === 0 && !gameOver && !nextLevelPending) {
     nextLevelPending = true;
     
+    // Pulisci immediatamente gli array
+    bullets = [];
+    invaderBullets = [];
+    
     // Incrementa il livello e aggiorna le statistiche
     level++;
     lives++;
@@ -527,17 +532,14 @@ function checkInvaderReach() {
     shieldHealth = Math.floor(5 * Math.pow(1.5, level - 1));
     invaderSpeed += 0.1;
     
-    // Pulisci gli array prima di creare nuovi elementi
-    invaders = [];
-    bullets = [];
-    invaderBullets = [];
-    
     // Crea nuovi invasori e barriere
     createInvaders();
     createShields();
     
-    // Resetta il flag
-    nextLevelPending = false;
+    // Forza un frame di rendering
+    requestAnimationFrame(() => {
+      nextLevelPending = false;
+    });
   }
 }
 
