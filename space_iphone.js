@@ -505,17 +505,14 @@ function checkInvaderReach() {
   }
   if (Array.isArray(invaders) && invaders.length === 0 && !gameOver && !nextLevelPending) {
     nextLevelPending = true;
-    invaders = [{}]; // placeholder per evitare richiami multipli
-    setTimeout(() => {
-      level++;
-      lives++;
-      playBonusSound();
-      shieldHealth = Math.floor(5 * Math.pow(1.5, level - 1));
-      invaderSpeed += 0.1;
-      createInvaders();
-      createShields();
-      nextLevelPending = false;
-    }, 100);
+    level++;
+    lives++;
+    playBonusSound();
+    shieldHealth = Math.floor(5 * Math.pow(1.5, level - 1));
+    invaderSpeed += 0.1;
+    createInvaders();
+    createShields();
+    nextLevelPending = false;
   }
 }
 
@@ -524,40 +521,43 @@ function setupTouchControls() {
   const rightBtn = document.getElementById('right-btn');
   const fireBtn = document.getElementById('fire-btn');
 
-  leftBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    moveLeft = true;
-  });
-  leftBtn.addEventListener('touchend', (e) => {
-    e.preventDefault();
-    moveLeft = false;
-  });
-  rightBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    moveRight = true;
-  });
-  rightBtn.addEventListener('touchend', (e) => {
-    e.preventDefault();
-    moveRight = false;
-  });
-  fireBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    if (!gameStarted) {
-      gameStarted = true;
-      return;
-    }
-    if (gameOver) {
-      resetGame();
-      return;
-    }
-    if (gameStarted && !gameOver) {
-      bullets.push({
-        x: player.x,
-        y: player.y - player.height/2,
-        speed: 5
-      });
-      playLaserSound();
-    }
+  // Aggiungiamo gestori di eventi più robusti per iPhone
+  const touchEvents = ['touchstart', 'touchmove', 'touchend', 'touchcancel'];
+  
+  touchEvents.forEach(eventType => {
+    leftBtn.addEventListener(eventType, (e) => {
+      e.preventDefault();
+      if (eventType === 'touchstart') moveLeft = true;
+      else if (eventType === 'touchend' || eventType === 'touchcancel') moveLeft = false;
+    }, { passive: false });
+    
+    rightBtn.addEventListener(eventType, (e) => {
+      e.preventDefault();
+      if (eventType === 'touchstart') moveRight = true;
+      else if (eventType === 'touchend' || eventType === 'touchcancel') moveRight = false;
+    }, { passive: false });
+    
+    fireBtn.addEventListener(eventType, (e) => {
+      e.preventDefault();
+      if (eventType === 'touchstart') {
+        if (!gameStarted) {
+          gameStarted = true;
+          return;
+        }
+        if (gameOver) {
+          resetGame();
+          return;
+        }
+        if (gameStarted && !gameOver) {
+          bullets.push({
+            x: player.x,
+            y: player.y - player.height/2,
+            speed: 5
+          });
+          playLaserSound();
+        }
+      }
+    }, { passive: false });
   });
 }
 
