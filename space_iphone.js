@@ -20,6 +20,8 @@ let lastLifeSound = 0;
 let moveInput = 0; // -1 sinistra, 1 destra
 let onlyPortrait = true;
 let showOrientationMsg = false;
+let moveLeft = false;
+let moveRight = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -29,10 +31,11 @@ function setup() {
     y: height - 50,
     width: 60,
     height: 40,
-    speed: 20
+    speed: 12
   };
   createInvaders();
   createShields();
+  setupTouchControls();
 }
 
 function windowResized() {
@@ -112,6 +115,11 @@ function draw() {
     showGameOver();
     return;
   }
+  // Movimento solo tramite pulsanti
+  let moveInput = 0;
+  if (moveLeft && !moveRight) moveInput = -1;
+  else if (moveRight && !moveLeft) moveInput = 1;
+  else moveInput = 0;
   playerVelocity = moveInput * player.speed;
   player.x += playerVelocity;
   player.x = constrain(player.x, player.width/2, width - player.width/2);
@@ -122,13 +130,6 @@ function draw() {
   drawShields();
   drawHUD();
   checkInvaderReach();
-
-  // DEBUG SENSORI
-  fill(255, 255, 0);
-  textSize(16);
-  text('rotationX: ' + (typeof rotationX !== 'undefined' ? nf(rotationX, 1, 2) : 'n/a'), 20, height - 60);
-  text('rotationY: ' + (typeof rotationY !== 'undefined' ? nf(rotationY, 1, 2) : 'n/a'), 20, height - 40);
-  text('accelerationX: ' + (typeof accelerationX !== 'undefined' ? nf(accelerationX, 1, 2) : 'n/a'), 20, height - 20);
 }
 
 function showStartScreen() {
@@ -504,12 +505,40 @@ function checkInvaderReach() {
   }
 }
 
+function setupTouchControls() {
+  const leftBtn = document.getElementById('left-btn');
+  const rightBtn = document.getElementById('right-btn');
+
+  leftBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    moveLeft = true;
+  });
+  leftBtn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    moveLeft = false;
+  });
+  rightBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    moveRight = true;
+  });
+  rightBtn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    moveRight = false;
+  });
+}
+
 function touchStarted() {
-  // Richiesta permesso sensori su iOS
-  if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-    DeviceMotionEvent.requestPermission().then(response => {
-      // Puoi gestire la risposta se vuoi
-    }).catch(console.error);
+  // Se il tocco è su un pulsante, non sparare
+  const touch = touches[0];
+  const leftBtn = document.getElementById('left-btn').getBoundingClientRect();
+  const rightBtn = document.getElementById('right-btn').getBoundingClientRect();
+  if (
+    (touch.clientX >= leftBtn.left && touch.clientX <= leftBtn.right &&
+     touch.clientY >= leftBtn.top && touch.clientY <= leftBtn.bottom) ||
+    (touch.clientX >= rightBtn.left && touch.clientX <= rightBtn.right &&
+     touch.clientY >= rightBtn.top && touch.clientY <= rightBtn.bottom)
+  ) {
+    return false;
   }
   if (!gameStarted) {
     gameStarted = true;
@@ -527,25 +556,6 @@ function touchStarted() {
     });
     playLaserSound();
     return false;
-  }
-}
-
-function deviceMoved() {
-  // Solo portrait
-  if (window.innerWidth < window.innerHeight) {
-    // Prova rotationY
-    if (typeof rotationY !== 'undefined') {
-      if (rotationY > 10) moveInput = 1;
-      else if (rotationY < -10) moveInput = -1;
-      else moveInput = 0;
-    }
-    // Prova anche accelerationX se rotationY non funziona
-    if (typeof accelerationX !== 'undefined') {
-      if (accelerationX > 3) moveInput = 1;
-      else if (accelerationX < -3) moveInput = -1;
-    }
-  } else {
-    moveInput = 0;
   }
 }
 
