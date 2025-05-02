@@ -23,31 +23,47 @@ let showOrientationMsg = false;
 let moveLeft = false;
 let moveRight = false;
 let showInstructions = true;
+let firstDrawDone = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  // Altezza dei controlli touch (80px + margine) su mobile
-  let controlsHeight = window.innerWidth < 600 ? 80 : 100;
+  positionPlayerAndShields();
+  createInvaders();
+  setupTouchControls();
+}
+
+function positionPlayerAndShields() {
+  let fireBtnTop = getFireButtonTopY();
   player = {
     x: width / 2,
-    y: height - controlsHeight - 40, // più in alto rispetto ai controlli
-    width: 60,
-    height: 40,
+    y: fireBtnTop - 30,
+    width: 40,
+    height: 24,
     speed: 12
   };
-  createInvaders();
-  createShields();
-  setupTouchControls();
+  shields = [];
+  const shieldWidth = 50;
+  const shieldHeight = 25;
+  const spacing = width / 5;
+  for (let i = 0; i < 4; i++) {
+    shields.push({
+      x: (i + 1) * spacing,
+      y: player.y - 60,
+      width: shieldWidth,
+      height: shieldHeight,
+      health: shieldHealth,
+      color: i === 0 ? color(0, 255, 255) :
+             i === 1 ? color(255, 0, 255) :
+             i === 2 ? color(255, 255, 0) :
+             color(0, 255, 0)
+    });
+  }
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  // Aggiorna posizione cannone e scudi
-  let controlsHeight = window.innerWidth < 600 ? 80 : 100;
-  player.x = width / 2;
-  player.y = height - controlsHeight - 40;
-  createShields();
+  positionPlayerAndShields();
 }
 
 function createInvaders() {
@@ -81,28 +97,6 @@ function createInvaders() {
   }
 }
 
-function createShields() {
-  shields = [];
-  const shieldWidth = 50;
-  const shieldHeight = 25;
-  const spacing = width / 5;
-  // Altezza dei controlli touch (80px + margine)
-  let controlsHeight = window.innerWidth < 600 ? 80 : 100;
-  for (let i = 0; i < 4; i++) {
-    shields.push({
-      x: (i + 1) * spacing,
-      y: height - controlsHeight - 90, // più in alto rispetto ai controlli
-      width: shieldWidth,
-      height: shieldHeight,
-      health: shieldHealth,
-      color: i === 0 ? color(0, 255, 255) : // Ciano
-             i === 1 ? color(255, 0, 255) : // Magenta
-             i === 2 ? color(255, 255, 0) : // Giallo
-             color(0, 255, 0) // Verde
-    });
-  }
-}
-
 function draw() {
   if (onlyPortrait && window.innerWidth > window.innerHeight) {
     background(0);
@@ -129,6 +123,10 @@ function draw() {
   if (gameOver) {
     showGameOver();
     return;
+  }
+  if (!firstDrawDone) {
+    positionPlayerAndShields();
+    firstDrawDone = true;
   }
   let moveInput = 0;
   if (moveLeft && !moveRight) moveInput = -1;
@@ -606,4 +604,54 @@ window.addEventListener('DOMContentLoaded', () => {
       restartBtn.style.display = 'none';
     });
   }
-}); 
+});
+
+function getFireButtonTopY() {
+  const fireBtn = document.getElementById('fire-btn');
+  if (fireBtn) {
+    const rect = fireBtn.getBoundingClientRect();
+    // rect.top è relativo alla viewport, serve aggiungere scrollY per coordinate canvas
+    return rect.top + window.scrollY;
+  }
+  // fallback: lascia 120px dal fondo
+  return height - 120;
+}
+
+function resetGame() {
+  player = {
+    x: width / 2,
+    y: height - 100, // 100px sopra il pulsante
+    width: 40, // ridotto
+    height: 24, // ridotto
+    speed: 12
+  };
+  shields = [];
+  const shieldWidth = 50;
+  const shieldHeight = 25;
+  const spacing = width / 5;
+  for (let i = 0; i < 4; i++) {
+    shields.push({
+      x: (i + 1) * spacing,
+      y: player.y - 60, // 60px sopra il cannone
+      width: shieldWidth,
+      height: shieldHeight,
+      health: shieldHealth,
+      color: i === 0 ? color(0, 255, 255) : // Ciano
+             i === 1 ? color(255, 0, 255) : // Magenta
+             i === 2 ? color(255, 255, 0) : // Giallo
+             color(0, 255, 0) // Verde
+    });
+  }
+  invaders = [];
+  score = 0;
+  lives = 5;
+  gameOver = false;
+  gameStarted = false;
+  firstDrawDone = false;
+  level = 1;
+  invaderSpeed = 0.3;
+  invaderDirection = 1;
+  lastInvaderShot = 0;
+  createInvaders();
+  createShields();
+} 
