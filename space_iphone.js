@@ -508,6 +508,7 @@ function checkInvaderReach() {
 function setupTouchControls() {
   const leftBtn = document.getElementById('left-btn');
   const rightBtn = document.getElementById('right-btn');
+  const fireBtn = document.getElementById('fire-btn');
 
   leftBtn.addEventListener('touchstart', (e) => {
     e.preventDefault();
@@ -525,6 +526,25 @@ function setupTouchControls() {
     e.preventDefault();
     moveRight = false;
   });
+  fireBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (!gameStarted) {
+      gameStarted = true;
+      return;
+    }
+    if (gameOver) {
+      resetGame();
+      return;
+    }
+    if (gameStarted && !gameOver) {
+      bullets.push({
+        x: player.x,
+        y: player.y - player.height/2,
+        speed: 5
+      });
+      playLaserSound();
+    }
+  });
 }
 
 function touchStarted() {
@@ -535,49 +555,8 @@ function touchStarted() {
     else if (c.webkitRequestFullscreen) c.webkitRequestFullscreen();
     else if (c.msRequestFullscreen) c.msRequestFullscreen();
   }
-  // Se il tocco è su un pulsante, non sparare
-  const touch = touches[0];
-  const leftBtn = document.getElementById('left-btn').getBoundingClientRect();
-  const rightBtn = document.getElementById('right-btn').getBoundingClientRect();
-  if (
-    (touch.clientX >= leftBtn.left && touch.clientX <= leftBtn.right &&
-     touch.clientY >= leftBtn.top && touch.clientY <= leftBtn.bottom) ||
-    (touch.clientX >= rightBtn.left && touch.clientX <= rightBtn.right &&
-     touch.clientY >= rightBtn.top && touch.clientY <= rightBtn.bottom)
-  ) {
-    return false;
-  }
-  if (!gameStarted) {
-    gameStarted = true;
-    return false;
-  }
-  if (gameOver) {
-    resetGame();
-    return false;
-  }
-  if (gameStarted && !gameOver) {
-    bullets.push({
-      x: player.x,
-      y: player.y - player.height/2,
-      speed: 5
-    });
-    playLaserSound();
-    return false;
-  }
-}
-
-function resetGame() {
-  score = 0;
-  lives = 5;
-  gameOver = false;
-  invaderSpeed = 0.3;
-  level = 1;
-  shieldHealth = 5;
-  bullets = [];
-  invaderBullets = [];
-  createInvaders();
-  createShields();
-  player.x = width / 2;
+  // Il tocco sul resto dello schermo non fa nulla
+  return false;
 }
 
 function touchEnded() {
