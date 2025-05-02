@@ -451,7 +451,7 @@ function nextLevel() {
   
   // Crea nuovi invasori e barriere
   createInvaders();
-  createShields();
+  positionPlayerAndShields();
 }
 
 function updateInvaderBullets() {
