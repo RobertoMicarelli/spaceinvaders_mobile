@@ -18,6 +18,8 @@ let shieldHealth = 5;
 let audioContext;
 let lastLifeSound = 0;
 let moveInput = 0; // -1 sinistra, 1 destra
+let onlyPortrait = true;
+let showOrientationMsg = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -66,13 +68,13 @@ function createInvaders() {
 
 function createShields() {
   shields = [];
-  const shieldWidth = 80;
-  const shieldHeight = 40;
+  const shieldWidth = 50;
+  const shieldHeight = 25;
   const spacing = width / 5;
   for (let i = 0; i < 4; i++) {
     shields.push({
       x: (i + 1) * spacing,
-      y: height - 150,
+      y: height - 120,
       width: shieldWidth,
       height: shieldHeight,
       health: shieldHealth,
@@ -85,6 +87,17 @@ function createShields() {
 }
 
 function draw() {
+  if (onlyPortrait && window.innerWidth > window.innerHeight) {
+    background(0);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(28);
+    text("Ruota il dispositivo in verticale\nper giocare", width/2, height/2);
+    showOrientationMsg = true;
+    return;
+  } else {
+    showOrientationMsg = false;
+  }
   background(0);
   if (!gameStarted) {
     showStartScreen();
@@ -94,7 +107,6 @@ function draw() {
     showGameOver();
     return;
   }
-  // Movimento tramite accelerometro
   playerVelocity = moveInput * player.speed;
   player.x += playerVelocity;
   player.x = constrain(player.x, player.width/2, width - player.width/2);
