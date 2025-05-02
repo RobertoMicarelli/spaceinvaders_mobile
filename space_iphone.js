@@ -26,6 +26,7 @@ let showInstructions = true;
 let firstDrawDone = false;
 let nextLevelPending = false;
 let lastInvaderEliminated = false;
+let levelTransitionInProgress = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -394,9 +395,9 @@ function updateBullets() {
         invaders.splice(j, 1);
         bullets.splice(i, 1);
         
-        // Se era l'ultimo invasore, imposta il flag
-        if (invaders.length === 0) {
-          lastInvaderEliminated = true;
+        // Se era l'ultimo invasore, avvia la transizione
+        if (invaders.length === 0 && !levelTransitionInProgress) {
+          startLevelTransition();
         }
         break;
       }
@@ -420,6 +421,32 @@ function updateBullets() {
       bullets.splice(i, 1);
     }
   }
+}
+
+function startLevelTransition() {
+  if (levelTransitionInProgress) return;
+  
+  levelTransitionInProgress = true;
+  
+  // Pulisci tutti gli array
+  bullets = [];
+  invaderBullets = [];
+  
+  // Incrementa il livello e aggiorna le statistiche
+  level++;
+  lives++;
+  playBonusSound();
+  shieldHealth = Math.floor(5 * Math.pow(1.5, level - 1));
+  invaderSpeed += 0.1;
+  
+  // Crea nuovi invasori e barriere
+  createInvaders();
+  createShields();
+  
+  // Resetta il flag dopo un breve delay
+  setTimeout(() => {
+    levelTransitionInProgress = false;
+  }, 100);
 }
 
 function updateInvaderBullets() {
@@ -512,37 +539,9 @@ function checkInvaderReach() {
   for (let invader of invaders) {
     if (invader.y + invader.height/2 > player.y - player.height/2) {
       gameOver = true;
-      nextLevelPending = false;
-      lastInvaderEliminated = false;
+      levelTransitionInProgress = false;
       return;
     }
-  }
-
-  // Gestione del passaggio al livello successivo
-  if (lastInvaderEliminated && !gameOver && !nextLevelPending) {
-    nextLevelPending = true;
-    lastInvaderEliminated = false;
-    
-    // Pulisci tutti gli array
-    bullets = [];
-    invaderBullets = [];
-    invaders = [];
-    
-    // Incrementa il livello e aggiorna le statistiche
-    level++;
-    lives++;
-    playBonusSound();
-    shieldHealth = Math.floor(5 * Math.pow(1.5, level - 1));
-    invaderSpeed += 0.1;
-    
-    // Crea nuovi invasori e barriere
-    createInvaders();
-    createShields();
-    
-    // Resetta il flag dopo un breve delay
-    setTimeout(() => {
-      nextLevelPending = false;
-    }, 50);
   }
 }
 
@@ -690,8 +689,7 @@ function resetGame() {
   invaderSpeed = 0.3;
   invaderDirection = 1;
   lastInvaderShot = 0;
-  lastInvaderEliminated = false;
-  nextLevelPending = false;
+  levelTransitionInProgress = false;
   createInvaders();
   createShields();
 } 
