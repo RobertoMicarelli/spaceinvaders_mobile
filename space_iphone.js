@@ -56,6 +56,7 @@ function createInvaders() {
   const spacing = availableWidth / (cols - 1);
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
+      let colIndex = j + 1;
       invaders.push({
         x: margin + j * spacing,
         y: i * (invaderH + 10) + 50,
@@ -546,13 +547,17 @@ function setupTouchControls() {
   });
 }
 
-function touchStarted() {
+function touchStarted(e) {
   // Fullscreen al primo tocco
   let c = document.querySelector('canvas');
   if (c && document.fullscreenElement == null) {
     if (c.requestFullscreen) c.requestFullscreen();
     else if (c.webkitRequestFullscreen) c.webkitRequestFullscreen();
     else if (c.msRequestFullscreen) c.msRequestFullscreen();
+  }
+  // Se il tocco è su una freccia o sul pulsante di fuoco, non fare nulla qui
+  if (e && e.target && (e.target.id === 'left-btn' || e.target.id === 'right-btn' || e.target.id === 'fire-btn')) {
+    return false;
   }
   // Il tocco sul resto dello schermo non fa nulla
   return false;
