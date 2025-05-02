@@ -110,13 +110,12 @@ function draw() {
     showOrientationMsg = false;
   }
   background(0);
-  if (showInstructions) {
-    const infoDiv = document.getElementById('info');
-    if (infoDiv) infoDiv.style.display = 'block';
-  } else {
-    const infoDiv = document.getElementById('info');
-    if (infoDiv) infoDiv.style.display = 'none';
-  }
+  const infoDiv = document.getElementById('info');
+  if (showInstructions && infoDiv) infoDiv.style.display = 'block';
+  else if (infoDiv) infoDiv.style.display = 'none';
+  const restartBtn = document.getElementById('restart-btn');
+  if (gameOver && restartBtn) restartBtn.style.display = 'block';
+  else if (restartBtn) restartBtn.style.display = 'none';
   if (!gameStarted) {
     showStartScreen();
     return;
@@ -252,34 +251,28 @@ function drawInvader(invader) {
 function updateInvaders() {
   let moveDown = false;
   let edgeReached = false;
-
-  // Trova il bordo più a sinistra e più a destra del gruppo
   let minX = width, maxX = 0;
   for (let invader of invaders) {
     if (invader.x - invader.width/2 < minX) minX = invader.x - invader.width/2;
     if (invader.x + invader.width/2 > maxX) maxX = invader.x + invader.width/2;
   }
-
-  // Controlla se il gruppo ha raggiunto i bordi
   if ((maxX > width && invaderDirection > 0) ||
       (minX < 0 && invaderDirection < 0)) {
     edgeReached = true;
   }
-
   if (edgeReached) {
     invaderDirection *= -1;
     moveDown = true;
   }
-
   for (let i = invaders.length - 1; i >= 0; i--) {
     let invader = invaders[i];
     if (moveDown) {
-      invader.y += 8; // discesa più lenta per schermi piccoli
+      invader.y += 8;
     } else {
       invader.x += invaderSpeed * invaderDirection;
     }
     drawInvader(invader);
-    if (random(1) < 0.01 && millis() - lastInvaderShot > 500) {
+    if (random(1) < 0.008 && millis() - lastInvaderShot > 500) {
       invaderBullets.push({
         x: invader.x,
         y: invader.y + invader.height/2,
@@ -557,30 +550,23 @@ function setupTouchControls() {
 }
 
 function touchStarted(e) {
-  // Fullscreen al primo tocco
   let c = document.querySelector('canvas');
   if (c && document.fullscreenElement == null) {
     if (c.requestFullscreen) c.requestFullscreen();
     else if (c.webkitRequestFullscreen) c.webkitRequestFullscreen();
     else if (c.msRequestFullscreen) c.msRequestFullscreen();
   }
-  // Nascondi istruzioni dopo il primo tocco
   showInstructions = false;
-  // Se il gioco è finito, il tocco ovunque fa ripartire
   if (gameOver) {
-    resetGame();
     return false;
   }
-  // Se il tocco è su una freccia o sul pulsante di fuoco, non fare nulla qui
   if (e && e.target && (e.target.id === 'left-btn' || e.target.id === 'right-btn' || e.target.id === 'fire-btn')) {
     return false;
   }
-  // Se il gioco non è ancora iniziato, avvialo
   if (!gameStarted) {
     gameStarted = true;
     return false;
   }
-  // Il tocco sul resto dello schermo non fa nulla
   return false;
 }
 
@@ -588,4 +574,22 @@ function touchEnded() {
   if (audioContext && audioContext.state === 'suspended') {
     audioContext.resume();
   }
-} 
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const restartBtn = document.getElementById('restart-btn');
+  if (restartBtn) {
+    restartBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      resetGame();
+      showInstructions = false;
+      restartBtn.style.display = 'none';
+    });
+    restartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      resetGame();
+      showInstructions = false;
+      restartBtn.style.display = 'none';
+    });
+  }
+}); 
