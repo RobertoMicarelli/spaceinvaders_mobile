@@ -395,9 +395,9 @@ function updateBullets() {
         invaders.splice(j, 1);
         bullets.splice(i, 1);
         
-        // Se era l'ultimo invasore, avvia la transizione
-        if (invaders.length === 0 && !levelTransitionInProgress) {
-          startLevelTransition();
+        // Se era l'ultimo invasore, passa al livello successivo
+        if (invaders.length === 0) {
+          nextLevel();
         }
         break;
       }
@@ -423,16 +423,12 @@ function updateBullets() {
   }
 }
 
-function startLevelTransition() {
-  if (levelTransitionInProgress) return;
-  
-  levelTransitionInProgress = true;
-  
-  // Pulisci tutti gli array
+function nextLevel() {
+  // Pulisci tutto
   bullets = [];
   invaderBullets = [];
   
-  // Incrementa il livello e aggiorna le statistiche
+  // Aggiorna le statistiche
   level++;
   lives++;
   playBonusSound();
@@ -442,11 +438,6 @@ function startLevelTransition() {
   // Crea nuovi invasori e barriere
   createInvaders();
   createShields();
-  
-  // Resetta il flag dopo un breve delay
-  setTimeout(() => {
-    levelTransitionInProgress = false;
-  }, 100);
 }
 
 function updateInvaderBullets() {
@@ -535,11 +526,10 @@ function drawHUD() {
 }
 
 function checkInvaderReach() {
-  // Controlla se gli invasori hanno raggiunto il giocatore
+  // Controlla solo se gli invasori hanno raggiunto il giocatore
   for (let invader of invaders) {
     if (invader.y + invader.height/2 > player.y - player.height/2) {
       gameOver = true;
-      levelTransitionInProgress = false;
       return;
     }
   }
@@ -689,7 +679,6 @@ function resetGame() {
   invaderSpeed = 0.3;
   invaderDirection = 1;
   lastInvaderShot = 0;
-  levelTransitionInProgress = false;
   createInvaders();
   createShields();
 } 
