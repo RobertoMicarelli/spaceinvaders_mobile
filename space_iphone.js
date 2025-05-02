@@ -509,7 +509,7 @@ function checkInvaderReach() {
       lives++;
       playBonusSound();
       shieldHealth = Math.floor(5 * Math.pow(1.5, level - 1));
-      invaderSpeed += 0.5;
+      invaderSpeed += 0.1;
       createInvaders();
       createShields();
     }, 100);
