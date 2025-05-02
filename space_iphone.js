@@ -27,6 +27,8 @@ let firstDrawDone = false;
 let nextLevelPending = false;
 let lastInvaderEliminated = false;
 let levelTransitionInProgress = false;
+let levelInTransition = false;
+let debugMsg = '';
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -102,50 +104,58 @@ function createInvaders() {
 }
 
 function draw() {
-  if (onlyPortrait && window.innerWidth > window.innerHeight) {
+  try {
+    if (onlyPortrait && window.innerWidth > window.innerHeight) {
+      background(0);
+      fill(255);
+      textAlign(CENTER, CENTER);
+      textSize(28);
+      text("Ruota il dispositivo in verticale\nper giocare", width/2, height/2);
+      showOrientationMsg = true;
+      return;
+    } else {
+      showOrientationMsg = false;
+    }
     background(0);
-    fill(255);
-    textAlign(CENTER, CENTER);
-    textSize(28);
-    text("Ruota il dispositivo in verticale\nper giocare", width/2, height/2);
-    showOrientationMsg = true;
-    return;
-  } else {
-    showOrientationMsg = false;
+    const infoDiv = document.getElementById('info');
+    if (showInstructions && infoDiv) infoDiv.style.display = 'block';
+    else if (infoDiv) infoDiv.style.display = 'none';
+    const restartBtn = document.getElementById('restart-btn');
+    if (gameOver && restartBtn) restartBtn.style.display = 'block';
+    else if (restartBtn) restartBtn.style.display = 'none';
+    if (!gameStarted) {
+      showStartScreen();
+      if (debugMsg) showDebugMsg();
+      return;
+    }
+    if (gameOver) {
+      showGameOver();
+      if (debugMsg) showDebugMsg();
+      return;
+    }
+    if (!firstDrawDone) {
+      positionPlayerAndShields();
+      firstDrawDone = true;
+    }
+    let moveInput = 0;
+    if (moveLeft && !moveRight) moveInput = -1;
+    else if (moveRight && !moveLeft) moveInput = 1;
+    else moveInput = 0;
+    playerVelocity = moveInput * player.speed;
+    player.x += playerVelocity;
+    player.x = constrain(player.x, player.width/2, width - player.width/2);
+    drawPlayer();
+    updateInvaders();
+    updateBullets();
+    updateInvaderBullets();
+    drawShields();
+    drawHUD();
+    checkInvaderReach();
+    if (debugMsg) showDebugMsg();
+  } catch (e) {
+    debugMsg = e.message;
+    showDebugMsg();
   }
-  background(0);
-  const infoDiv = document.getElementById('info');
-  if (showInstructions && infoDiv) infoDiv.style.display = 'block';
-  else if (infoDiv) infoDiv.style.display = 'none';
-  const restartBtn = document.getElementById('restart-btn');
-  if (gameOver && restartBtn) restartBtn.style.display = 'block';
-  else if (restartBtn) restartBtn.style.display = 'none';
-  if (!gameStarted) {
-    showStartScreen();
-    return;
-  }
-  if (gameOver) {
-    showGameOver();
-    return;
-  }
-  if (!firstDrawDone) {
-    positionPlayerAndShields();
-    firstDrawDone = true;
-  }
-  let moveInput = 0;
-  if (moveLeft && !moveRight) moveInput = -1;
-  else if (moveRight && !moveLeft) moveInput = 1;
-  else moveInput = 0;
-  playerVelocity = moveInput * player.speed;
-  player.x += playerVelocity;
-  player.x = constrain(player.x, player.width/2, width - player.width/2);
-  drawPlayer();
-  updateInvaders();
-  updateBullets();
-  updateInvaderBullets();
-  drawShields();
-  drawHUD();
-  checkInvaderReach();
 }
 
 function showStartScreen() {
@@ -395,9 +405,13 @@ function updateBullets() {
         invaders.splice(j, 1);
         bullets.splice(i, 1);
         
-        // Se era l'ultimo invasore, passa al livello successivo
-        if (invaders.length === 0) {
-          nextLevel();
+        // Se era l'ultimo invasore, passa al livello successivo SOLO se non già in transizione
+        if (invaders.length === 0 && !levelInTransition) {
+          levelInTransition = true;
+          setTimeout(() => {
+            nextLevel();
+            levelInTransition = false;
+          }, 300);
         }
         break;
       }
@@ -681,4 +695,15 @@ function resetGame() {
   lastInvaderShot = 0;
   createInvaders();
   createShields();
-} 
+}
+
+function showDebugMsg() {
+  fill(255,0,0);
+  textAlign(CENTER);
+  textSize(16);
+  text('DEBUG: ' + debugMsg, width/2, height - 40);
+}
+
+window.onerror = function(msg, url, line, col, error) {
+  debugMsg = msg + ' (line ' + line + ')';
+}; 
