@@ -4,7 +4,7 @@ Piccolo test con Cursor.AI per creare una APP giocabile su cellulare
 
 Un classico gioco Space Invaders ottimizzato per dispositivi mobili, creato con p5.js.
 
-![Space Invaders](https://raw.githubusercontent.com/RobertoMicarelli/spaceinvaders_mobile/main/preview.png)
+![Space Invaders](https://raw.githubusercontent.com/RobertoMicarelli/spaceinvaders_mobile/preview.png)
 
 ## 🚀 Deploy su GitHub Pages
 
