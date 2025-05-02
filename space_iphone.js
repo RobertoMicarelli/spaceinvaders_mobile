@@ -528,6 +528,13 @@ function setupTouchControls() {
 }
 
 function touchStarted() {
+  // Fullscreen al primo tocco
+  let c = document.querySelector('canvas');
+  if (c && document.fullscreenElement == null) {
+    if (c.requestFullscreen) c.requestFullscreen();
+    else if (c.webkitRequestFullscreen) c.webkitRequestFullscreen();
+    else if (c.msRequestFullscreen) c.msRequestFullscreen();
+  }
   // Se il tocco è su un pulsante, non sparare
   const touch = touches[0];
   const leftBtn = document.getElementById('left-btn').getBoundingClientRect();
