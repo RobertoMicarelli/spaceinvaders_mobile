@@ -35,16 +35,17 @@ function setup() {
 
 function positionPlayerAndShields() {
   let fireBtnTop = getFireButtonTopY();
+  const shieldWidth = 50;
+  const shieldHeight = 25;
+  // Cannone: stessa larghezza delle barriere, altezza 35
   player = {
     x: width / 2,
-    y: fireBtnTop - 30,
-    width: 40,
-    height: 24,
+    y: fireBtnTop - 45, // 45px sopra il pulsante (30+15)
+    width: shieldWidth,
+    height: 35,
     speed: 12
   };
   shields = [];
-  const shieldWidth = 50;
-  const shieldHeight = 25;
   const spacing = width / 5;
   for (let i = 0; i < 4; i++) {
     shields.push({
@@ -616,16 +617,16 @@ function getFireButtonTopY() {
 }
 
 function resetGame() {
+  const shieldWidth = 50;
+  const shieldHeight = 25;
   player = {
     x: width / 2,
-    y: height - 100,
-    width: 40,
-    height: 24,
+    y: height - 115, // 15px più in alto rispetto a prima
+    width: shieldWidth,
+    height: 35,
     speed: 12
   };
   shields = [];
-  const shieldWidth = 50;
-  const shieldHeight = 25;
   const spacing = width / 5;
   for (let i = 0; i < 4; i++) {
     shields.push({
