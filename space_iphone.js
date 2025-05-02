@@ -22,6 +22,7 @@ let onlyPortrait = true;
 let showOrientationMsg = false;
 let moveLeft = false;
 let moveRight = false;
+let showInstructions = true;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -57,9 +58,10 @@ function createInvaders() {
   const spacing = availableWidth / (totalCols - 1);
   // Crea solo le colonne centrali (da 1 a 8) di una griglia 10x6
   for (let i = 0; i < rows; i++) {
-    for (let j = 1; j <= usedCols; j++) { // j da 1 a 8
+    for (let j = 0; j < usedCols; j++) { // j da 0 a 7
+      let colIndex = j + 1; // colonne 1-8
       invaders.push({
-        x: margin + j * spacing,
+        x: margin + colIndex * spacing,
         y: i * (invaderH + 10) + 50,
         width: invaderW,
         height: invaderH,
@@ -108,6 +110,13 @@ function draw() {
     showOrientationMsg = false;
   }
   background(0);
+  if (showInstructions) {
+    const infoDiv = document.getElementById('info');
+    if (infoDiv) infoDiv.style.display = 'block';
+  } else {
+    const infoDiv = document.getElementById('info');
+    if (infoDiv) infoDiv.style.display = 'none';
+  }
   if (!gameStarted) {
     showStartScreen();
     return;
@@ -116,7 +125,6 @@ function draw() {
     showGameOver();
     return;
   }
-  // Movimento solo tramite pulsanti
   let moveInput = 0;
   if (moveLeft && !moveRight) moveInput = -1;
   else if (moveRight && !moveLeft) moveInput = 1;
@@ -556,6 +564,8 @@ function touchStarted(e) {
     else if (c.webkitRequestFullscreen) c.webkitRequestFullscreen();
     else if (c.msRequestFullscreen) c.msRequestFullscreen();
   }
+  // Nascondi istruzioni dopo il primo tocco
+  showInstructions = false;
   // Se il gioco è finito, il tocco ovunque fa ripartire
   if (gameOver) {
     resetGame();
@@ -563,6 +573,11 @@ function touchStarted(e) {
   }
   // Se il tocco è su una freccia o sul pulsante di fuoco, non fare nulla qui
   if (e && e.target && (e.target.id === 'left-btn' || e.target.id === 'right-btn' || e.target.id === 'fire-btn')) {
+    return false;
+  }
+  // Se il gioco non è ancora iniziato, avvialo
+  if (!gameStarted) {
+    gameStarted = true;
     return false;
   }
   // Il tocco sul resto dello schermo non fa nulla
