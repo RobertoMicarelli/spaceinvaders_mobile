@@ -167,18 +167,18 @@ function drawPlayer() {
   fill(0, 255, 0);
   noStroke();
   rect(player.x - player.width/2, player.y - player.height/2, player.width, player.height);
-  rect(player.x - 10, player.y - player.height/2 - 10, 20, 10);
+  rect(player.x - 7, player.y - player.height/2 - 7, 14, 7);
   triangle(
     player.x - player.width/2, player.y - player.height/2,
-    player.x - player.width/2 - 10, player.y - player.height/2 + 10,
-    player.x - player.width/2, player.y - player.height/2 + 10
+    player.x - player.width/2 - 7, player.y - player.height/2 + 7,
+    player.x - player.width/2, player.y - player.height/2 + 7
   );
   triangle(
     player.x + player.width/2, player.y - player.height/2,
-    player.x + player.width/2 + 10, player.y - player.height/2 + 10,
-    player.x + player.width/2, player.y - player.height/2 + 10
+    player.x + player.width/2 + 7, player.y - player.height/2 + 7,
+    player.x + player.width/2, player.y - player.height/2 + 7
   );
-  rect(player.x - 2, player.y - player.height/2 - 20, 4, 20);
+  rect(player.x - 1.5, player.y - player.height/2 - 12, 3, 12);
 }
 
 function drawInvader(invader) {
@@ -583,14 +583,14 @@ function touchEnded() {
 window.addEventListener('DOMContentLoaded', () => {
   const restartBtn = document.getElementById('restart-btn');
   if (restartBtn) {
-    // Usa pointerdown per compatibilità universale
+    restartBtn.style.zIndex = 9999;
+    restartBtn.style.pointerEvents = 'auto';
     restartBtn.addEventListener('pointerdown', (e) => {
       e.preventDefault();
       resetGame();
       showInstructions = false;
       restartBtn.style.display = 'none';
     });
-    // Fallback per click/touchstart
     restartBtn.addEventListener('touchstart', (e) => {
       e.preventDefault();
       resetGame();
@@ -610,19 +610,17 @@ function getFireButtonTopY() {
   const fireBtn = document.getElementById('fire-btn');
   if (fireBtn) {
     const rect = fireBtn.getBoundingClientRect();
-    // rect.top è relativo alla viewport, serve aggiungere scrollY per coordinate canvas
     return rect.top + window.scrollY;
   }
-  // fallback: lascia 120px dal fondo
   return height - 120;
 }
 
 function resetGame() {
   player = {
     x: width / 2,
-    y: height - 100, // 100px sopra il pulsante
-    width: 40, // ridotto
-    height: 24, // ridotto
+    y: height - 100,
+    width: 40,
+    height: 24,
     speed: 12
   };
   shields = [];
@@ -632,14 +630,14 @@ function resetGame() {
   for (let i = 0; i < 4; i++) {
     shields.push({
       x: (i + 1) * spacing,
-      y: player.y - 60, // 60px sopra il cannone
+      y: player.y - 60,
       width: shieldWidth,
       height: shieldHeight,
       health: shieldHealth,
-      color: i === 0 ? color(0, 255, 255) : // Ciano
-             i === 1 ? color(255, 0, 255) : // Magenta
-             i === 2 ? color(255, 255, 0) : // Giallo
-             color(0, 255, 0) // Verde
+      color: i === 0 ? color(0, 255, 255) :
+             i === 1 ? color(255, 0, 255) :
+             i === 2 ? color(255, 255, 0) :
+             color(0, 255, 0)
     });
   }
   invaders = [];
