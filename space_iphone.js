@@ -27,9 +27,11 @@ let showInstructions = true;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  // Altezza dei controlli touch (80px + margine) su mobile
+  let controlsHeight = window.innerWidth < 600 ? 80 : 100;
   player = {
     x: width / 2,
-    y: height - 50,
+    y: height - controlsHeight - 40, // più in alto rispetto ai controlli
     width: 60,
     height: 40,
     speed: 12
@@ -41,8 +43,10 @@ function setup() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  // Aggiorna posizione cannone e scudi
+  let controlsHeight = window.innerWidth < 600 ? 80 : 100;
   player.x = width / 2;
-  player.y = height - 50;
+  player.y = height - controlsHeight - 40;
   createShields();
 }
 
@@ -82,10 +86,12 @@ function createShields() {
   const shieldWidth = 50;
   const shieldHeight = 25;
   const spacing = width / 5;
+  // Altezza dei controlli touch (80px + margine)
+  let controlsHeight = window.innerWidth < 600 ? 80 : 100;
   for (let i = 0; i < 4; i++) {
     shields.push({
       x: (i + 1) * spacing,
-      y: height - 120,
+      y: height - controlsHeight - 90, // più in alto rispetto ai controlli
       width: shieldWidth,
       height: shieldHeight,
       health: shieldHealth,
@@ -579,6 +585,14 @@ function touchEnded() {
 window.addEventListener('DOMContentLoaded', () => {
   const restartBtn = document.getElementById('restart-btn');
   if (restartBtn) {
+    // Usa pointerdown per compatibilità universale
+    restartBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      resetGame();
+      showInstructions = false;
+      restartBtn.style.display = 'none';
+    });
+    // Fallback per click/touchstart
     restartBtn.addEventListener('touchstart', (e) => {
       e.preventDefault();
       resetGame();
