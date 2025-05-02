@@ -2,7 +2,7 @@
 
 Un classico gioco Space Invaders ottimizzato per dispositivi mobili, creato con p5.js e controlli touch.
 
-![Preview](./preview.jpg)
+![Preview](./preview.png)
 
 ## 🚀 Deploy su GitHub Pages
 
