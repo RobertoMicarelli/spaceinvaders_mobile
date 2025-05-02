@@ -694,7 +694,7 @@ function resetGame() {
   invaderDirection = 1;
   lastInvaderShot = 0;
   createInvaders();
-  createShields();
+  positionPlayerAndShields();
 }
 
 function showDebugMsg() {
